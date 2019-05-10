@@ -23,8 +23,7 @@ class ReactionTimeTest(QtWidgets.QWidget):
         self.settings = []
         self.pause = False
         self.start_time = 0
-        # https://stackoverflow.com/questions/6142689/initialising-
-        # an-array-of-fixed-size-in-python
+        # https://stackoverflow.com/questions/6142689/initialising-an-array-of-fixed-size-in-python
         self.results = [None] * 4
         task_settings = []
 
@@ -46,6 +45,7 @@ class ReactionTimeTest(QtWidgets.QWidget):
         self.setGeometry(500, 350, 800, 400)
         self.setWindowTitle('Experiment')
         self.setFocusPolicy(QtCore.Qt.StrongFocus)
+        self.text = "Press F or J to start"
         self.show()
 
     def keyPressEvent(self, ev):
@@ -65,7 +65,9 @@ class ReactionTimeTest(QtWidgets.QWidget):
         qp = QtGui.QPainter()
         qp.begin(self)
 
-        if self.counter != 0 and not self.pause:
+        if self.counter == 0:
+            self.drawText(event, qp)
+        elif self.counter != 0 and not self.pause:
             trial = self.settings[1][self.counter-1]
             self.drawStimulus(event, qp, trial[0])
             self.setDistraction(event, qp, trial[1])
@@ -80,6 +82,11 @@ class ReactionTimeTest(QtWidgets.QWidget):
         time.sleep(int(self.settings[2]) / 1000)
         self.pause = False
 
+    def drawText(self, event, qp):
+        qp.setPen(QtGui.QColor(0, 0, 0))
+        qp.setFont(QtGui.QFont('Decorative', 50))
+        qp.drawText(event.rect(), QtCore.Qt.AlignCenter, self.text)
+
     def drawStimulus(self, event, qp, param):
         # https://stackoverflow.com/questions/6824681/get-a-random-boolean-in-python
         self.random_bool = bool(random.getrandbits(1))
@@ -87,11 +94,11 @@ class ReactionTimeTest(QtWidgets.QWidget):
         if param == "A":
 
             if self.random_bool:
-                stimulus_info = "Blue Rectangel"
+                stimulus_info = "Blue Rectangle"
                 qp.setBrush(QtGui.QColor(34, 34, 200))
 
             else:
-                stimulus_info = "Red Rectangel"
+                stimulus_info = "Red Rectangle"
                 qp.setBrush(QtGui.QColor(200, 34, 34))
 
             rect = QtCore.QRect(350, 150, 100, 100)
@@ -108,8 +115,8 @@ class ReactionTimeTest(QtWidgets.QWidget):
     def getEquation(self):
         x = random.randrange(1, 10, 1)
         y = random.randrange(1, 10, 1)
-        operator = [' + ', ' * ', ' - ', ' / ']
-        chosen_operator = operator[random.randrange(0, 3, 1)]
+        operators = [' + ', ' * ', ' - ', ' / ']
+        chosen_operator = operators[random.randrange(0, 3, 1)]
 
         equation = str(x) + chosen_operator + str(y)
         res = eval(equation)
@@ -124,7 +131,7 @@ class ReactionTimeTest(QtWidgets.QWidget):
 
     def setDistraction(self, event, qp, param):
         if param == "D":
-            #https://stackoverflow.com/questions/16573051/sound-alarm-when-code-finishes
+            # https://stackoverflow.com/questions/16573051/sound-alarm-when-code-finishes
             print('\007')
             print('\007')
             print('\007')
@@ -154,9 +161,18 @@ class ReactionTimeTest(QtWidgets.QWidget):
                self.results[3], datetime.datetime.now()]
 
         if not os.path.isfile("./reaction_time_results.csv"):
-            # https: // realpython.com / python - csv /
+            # https://realpython.com/python-csv/
             with open('reaction_time_results.csv', 'w', newline='') as result_file:
-                fieldnames =['PID', 'SS', 'MCOF', 'D', 'PK', 'RK', 'RT', 'TS']
+                fieldnames = [
+                    'Participant_ID',
+                    'Presented_Stimulus',
+                    'Mental_Complexity',
+                    'Distraction_Given',
+                    'Key_Pressed',
+                    'Right_Key_Chosen',
+                    'Reaction_Time',
+                    'Timestamp'
+                ]
                 file_writer = csv.DictWriter(result_file, fieldnames=fieldnames)
                 file_writer.writeheader()
                 file_writer.writerow({fieldnames[0]: res[0],
@@ -168,8 +184,7 @@ class ReactionTimeTest(QtWidgets.QWidget):
                                       fieldnames[6]: res[6],
                                       fieldnames[7]: res[7]})
         else:
-            # https://stackoverflow.com/questions/2363731/append-
-            # new-row-to-old-csv-file-python
+            # https://stackoverflow.com/questions/2363731/append-new-row-to-old-csv-file-python
             with open('reaction_time_results.csv', 'a') as result_file:
                 fields = res
                 file_writer = csv.writer(result_file)
