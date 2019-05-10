@@ -133,7 +133,7 @@ class ReactionTimeTest(QtWidgets.QWidget):
 
     def setDistraction(self, param):
         if param == "D":
-            # sounf from
+            # sound from
             # https://freesound.org/people/dobroide/sounds/46283/
             playsound("sound.wav")
 
