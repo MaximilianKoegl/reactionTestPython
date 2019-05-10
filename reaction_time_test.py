@@ -71,9 +71,7 @@ class ReactionTimeTest(QtWidgets.QWidget):
         if self.counter == 0:
             self.drawText(event, qp)
         elif self.counter != 0 and not self.pause:
-            trial = self.settings[1][self.counter-1]
-            self.drawStimulus(event, qp, trial[0])
-
+            self.drawStimulus(event, qp, self.settings[1][self.counter - 1][0])
 
         qp.end()
 
@@ -135,7 +133,8 @@ class ReactionTimeTest(QtWidgets.QWidget):
 
     def setDistraction(self, param):
         if param == "D":
-            # https://stackoverflow.com/questions/16573051/sound-alarm-when-code-finishes
+            # sounf from
+            # https://freesound.org/people/dobroide/sounds/46283/
             playsound("sound.wav")
 
 
