@@ -9,6 +9,7 @@ import time
 import datetime
 import random
 from PyQt5 import QtGui, QtWidgets, QtCore
+from playsound import playsound
 
 
 class ReactionTimeTest(QtWidgets.QWidget):
@@ -60,6 +61,8 @@ class ReactionTimeTest(QtWidgets.QWidget):
             self.waitProcess()
             self.update()
             self.setTimer()
+            self.setDistraction(self.settings[1][self.counter - 1][1])
+
 
     def paintEvent(self, event):
         qp = QtGui.QPainter()
@@ -70,9 +73,10 @@ class ReactionTimeTest(QtWidgets.QWidget):
         elif self.counter != 0 and not self.pause:
             trial = self.settings[1][self.counter-1]
             self.drawStimulus(event, qp, trial[0])
-            self.setDistraction(event, qp, trial[1])
+
 
         qp.end()
+
 
     def waitProcess(self):
         self.pause = True
@@ -129,12 +133,11 @@ class ReactionTimeTest(QtWidgets.QWidget):
 
         return equation + " = " + str(res)
 
-    def setDistraction(self, event, qp, param):
+    def setDistraction(self, param):
         if param == "D":
             # https://stackoverflow.com/questions/16573051/sound-alarm-when-code-finishes
-            print('\007')
-            print('\007')
-            print('\007')
+            playsound("sound.wav")
+
 
     def setTimer(self):
         self.start_time = time.time()
