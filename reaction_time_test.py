@@ -135,7 +135,8 @@ class ReactionTimeTest(QtWidgets.QWidget):
         if param == "D":
             # sound from
             # https://freesound.org/people/dobroide/sounds/46283/
-            playsound("sound.wav")
+            # playsound("sound.wav")
+            playsound("distraction-sound.wav")
 
 
     def setTimer(self):
